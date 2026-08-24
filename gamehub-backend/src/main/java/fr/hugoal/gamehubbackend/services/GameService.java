@@ -22,4 +22,23 @@ public class GameService {
     public Game createGame(Game game){
         return repository.save(game);
     }
+
+    public Game getGameById(Long id){
+        return repository.findById(id).orElseThrow();
+    }
+
+    public Game updateGame(Long id, Game game){
+        Game existing = repository.findById(id).orElseThrow();
+
+        existing.setTitle(game.getTitle());
+        existing.setPlatform(game.getPlatform());
+        existing.setPlayTime(game.getPlayTime());
+        existing.setRating(game.getRating());
+
+        return repository.save(existing);
+    }
+
+    public void deleteGame(Long id){
+        repository.deleteById(id);
+    }
 }
