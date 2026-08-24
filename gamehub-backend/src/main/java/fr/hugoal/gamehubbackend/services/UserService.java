@@ -1,5 +1,7 @@
 package fr.hugoal.gamehubbackend.services;
 
+import fr.hugoal.gamehubbackend.dtos.users.RegisterRequest;
+import fr.hugoal.gamehubbackend.dtos.users.UserResponse;
 import fr.hugoal.gamehubbackend.models.User;
 import fr.hugoal.gamehubbackend.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,25 +20,29 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User register(
-            String username,
-            String email,
-            String password){
-        if(userRepository.existsByUsername(username)){
+    public UserResponse register(RegisterRequest request){
+        if(userRepository.existsByUsername(request.username())){
             throw new IllegalArgumentException("Username already exists");
         }
 
-        if(userRepository.existsByEmail(email)){
+        if(userRepository.existsByEmail(request.email())){
             throw new IllegalArgumentException("Email already exists");
         }
 
         User user = User.builder()
-                .username(username)
-                .email(email)
-                .password(passwordEncoder.encode(password))
+                .username(request.username())
+                .email(request.email())
+                .password(passwordEncoder.encode(request.password()))
                 .role("USER")
                 .build();
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        return new UserResponse(
+                savedUser.getId(),
+                savedUser.getUsername(),
+                savedUser.getEmail(),
+                savedUser.getRole()
+        );
     }
 }
