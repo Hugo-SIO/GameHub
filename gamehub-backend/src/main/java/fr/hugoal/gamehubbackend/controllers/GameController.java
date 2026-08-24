@@ -25,4 +25,20 @@ public class GameController {
     public Game createGame(@RequestBody Game game){
         return this.service.createGame(game);
     }
+
+    @GetMapping("/{id}")
+    public Game getGame(@PathVariable Long id){
+        return this.service.getGameById(id);
+    }
+
+    @PutMapping("/{id}")
+    public Game updateGame(@PathVariable Long id,
+                           @RequestBody Game game) {
+        return service.updateGame(id, game);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteGame(@PathVariable Long id) {
+        service.deleteGame(id);
+    }
 }
